@@ -1,9 +1,9 @@
 //
 //  BRBCashAddr.c
-//  breadwallet-core
+//  elicoinwallet-core
 //
 //  Created by Aaron Voisine on 1/20/18.
-//  Copyright (c) 2018 breadwallet LLC
+//  Copyright (c) 2018 elicoinwallet LLC
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -48,23 +48,23 @@ static size_t _BRBCashAddrDecode(char *hrp12, uint8_t *data21, const char *addr)
     size_t i, j, bufLen, addrLen = (addr) ? strlen(addr) : 0, sep = addrLen;
     uint64_t x, chk = 1;
     uint8_t c, buf[22], upper = 0, lower = 0;
-    
+
     assert(hrp12 != NULL);
     assert(data21 != NULL);
     assert(addr != NULL);
-    
+
     for (i = 0; i < addrLen; i++) {
         if (addr[i] < 33 || addr[i] > 126) return 0;
         if (islower(addr[i])) lower = 1;
         if (isupper(addr[i])) upper = 1;
     }
-    
+
     while (sep > 0 && addr[sep] != ':') sep--;
     if (sep > 11 || sep + 34 + 8 > addrLen || (upper && lower)) return 0;
     for (i = 0; i < sep; i++) chk = polymod(chk) ^ (addr[i] & 0x1f);
     chk = polymod(chk);
     memset(buf, 0, sizeof(buf));
-    
+
     for (i = sep + 1, j = 0; i < addrLen; i++, j++) {
         switch (tolower(addr[i])) {
             case 'q': c = 0;  break; case 'p': c = 1;  break; case 'z': c = 2;  break; case 'r': c = 3;  break;
@@ -77,14 +77,14 @@ static size_t _BRBCashAddrDecode(char *hrp12, uint8_t *data21, const char *addr)
             case 'u': c = 28; break; case 'a': c = 29; break; case '7': c = 30; break; case 'l': c = 31; break;
             default: return 0; // invalid bech32 digit
         }
-        
+
         chk = polymod(chk) ^ c;
         if (i + 8 >= addrLen) continue;
         x = (j % 8)*5 - ((j % 8)*5/8)*8;
         buf[(j/8)*5 + (j % 8)*5/8] |= (c << 3) >> x;
         if (x > 3) buf[(j/8)*5 + (j % 8)*5/8 + 1] |= c << (11 - x);
     }
-    
+
     bufLen = (addrLen - (sep + 8))*5/8;
     if (hrp12 == NULL || data21 == NULL || chk != 1 || bufLen != 21) return 0;
     for (i = 0; i < sep; i++) hrp12[i] = tolower(addr[i]);
@@ -101,22 +101,22 @@ static size_t _BRBCashAddrEncode(char *addr55, const char *hrp, const uint8_t da
     uint64_t x, chk = 1;
     uint8_t a, b = 0, c = 0;
     size_t i, j;
-    
+
     assert(addr55 != NULL);
     assert(hrp != NULL);
     assert(data != NULL);
     assert(dataLen == 21);
-    
+
     for (i = 0; hrp && hrp[i]; i++) {
         if (i > 12 || hrp[i] < 33 || hrp[i] > 126 || isupper(hrp[i])) return 0;
         chk = polymod(chk) ^ (hrp[i] & 0x1f);
         addr[i] = hrp[i];
     }
-    
+
     chk = polymod(chk);
     addr[i++] = ':';
     if (i < 1 || data == NULL || dataLen != 21) return 0;
-    
+
     for (j = 0; j <= dataLen; j++) {
         a = b, b = (j < dataLen) ? data[j] : 0;
         x = (j % 5)*8 - ((j % 5)*8/5)*5;
@@ -125,7 +125,7 @@ static size_t _BRBCashAddrEncode(char *addr55, const char *hrp, const uint8_t da
         if (x >= 2) c = (b >> (x - 2)) & 0x1f;
         if (x >= 2 && j < dataLen) chk = polymod(chk) ^ c, addr[i++] = chars[c];
     }
-    
+
     for (j = 0; j < 8; j++) chk = polymod(chk);
     chk ^= 1;
     for (j = 0; j < 8; ++j) addr[i++] = chars[(chk >> ((7 - j)*5)) & 0x1f];
@@ -140,10 +140,10 @@ size_t BRBCashAddrDecode(char *bitcoinAddr36, const char *bCashAddr)
     uint8_t data[21], ver = UINT8_MAX;
     char bchaddr[55] = "bitcoincash:", bchtest[55] = "bchtest:", bchreg[55] = "bchreg:",
          BCHaddr[55] = "BITCOINCASH:", BCHtest[55] = "BCHTEST:", BCHreg[55] = "BCHREG:", hrp[12];
-    
+
     assert(bitcoinAddr36 != NULL);
     assert(bCashAddr != NULL);
-    
+
     if (_BRBCashAddrDecode(hrp, data, bCashAddr) == 21) {
         if (strcmp(hrp, "bitcoincash") == 0) {
             if (data[0] == 0x00) ver = BITCOIN_PUBKEY_ADDRESS;
@@ -186,7 +186,7 @@ size_t BRBCashAddrEncode(char *bCashAddr55, const char *bitcoinAddr)
 {
     uint8_t data[21], ver = 0;
     const char *hrp = NULL;
-    
+
     assert(bCashAddr55 != NULL);
     assert(bitcoinAddr != NULL);
     if (BRBase58CheckDecode(data, sizeof(data), bitcoinAddr) != 21) return 0;
@@ -197,4 +197,3 @@ size_t BRBCashAddrEncode(char *bCashAddr55, const char *bitcoinAddr)
     data[0] = ver;
     return _BRBCashAddrEncode(bCashAddr55, hrp, data, 21);
 }
-

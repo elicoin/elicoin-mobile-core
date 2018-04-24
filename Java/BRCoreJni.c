@@ -1,5 +1,5 @@
 //  Created by Ed Gamble on 1/23/2018
-//  Copyright (c) 2018 breadwallet LLC.
+//  Copyright (c) 2018 elicoinwallet LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -86,5 +86,3 @@ transactionOutputCopy (BRTxOutput *target,
     target->script = NULL;
     BRTxOutputSetScript(target, source->script, source->scriptLen);
 }
-
-

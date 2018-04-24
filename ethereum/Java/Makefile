@@ -4,9 +4,9 @@ CINC_DIR=/usr/include
 
 JNI_LIB=libCore.jnilib
 
-JNI_SRCS=com_breadwallet_core_ethereum_BREthereumLightNode.c \
-	com_breadwallet_core_ethereum_BREthereumNetwork.c \
-	com_breadwallet_core_ethereum_BREthereumToken.c
+JNI_SRCS=com_elicoinwallet_core_ethereum_BREthereumLightNode.c \
+	com_elicoinwallet_core_ethereum_BREthereumNetwork.c \
+	com_elicoinwallet_core_ethereum_BREthereumToken.c
 #	BRCoreJni.c
 
 JNI_OBJS=$(JNI_SRCS:.c=.o)
@@ -14,15 +14,15 @@ JNI_OBJS=$(JNI_SRCS:.c=.o)
 # JNI Header Files that we are interest in keeping (that are not empty)
 JNI_HDRS=$(JNI_SRCS:.c=.h)
 
-JAVA_SRCS=../../Java/root/com/breadwallet/core/BRCoreJniReference.java \
-	root/com/breadwallet/core/ethereum/BREthereumAccount.java \
-	root/com/breadwallet/core/ethereum/BREthereumAmount.java \
-	root/com/breadwallet/core/ethereum/BREthereumLightNode.java \
-	root/com/breadwallet/core/ethereum/BREthereumNetwork.java \
-	root/com/breadwallet/core/ethereum/BREthereumToken.java \
-	root/com/breadwallet/core/ethereum/BREthereumTransaction.java \
-	root/com/breadwallet/core/ethereum/BREthereumWallet.java \
-	root/com/breadwallet/core/ethereum/test/BREthereumLightNodeClientTest.java \
+JAVA_SRCS=../../Java/root/com/elicoinwallet/core/BRCoreJniReference.java \
+	root/com/elicoinwallet/core/ethereum/BREthereumAccount.java \
+	root/com/elicoinwallet/core/ethereum/BREthereumAmount.java \
+	root/com/elicoinwallet/core/ethereum/BREthereumLightNode.java \
+	root/com/elicoinwallet/core/ethereum/BREthereumNetwork.java \
+	root/com/elicoinwallet/core/ethereum/BREthereumToken.java \
+	root/com/elicoinwallet/core/ethereum/BREthereumTransaction.java \
+	root/com/elicoinwallet/core/ethereum/BREthereumWallet.java \
+	root/com/elicoinwallet/core/ethereum/test/BREthereumLightNodeClientTest.java \
 
 JAVA_OBJS=$(JAVA_SRCS:.java=.class)
 
@@ -44,7 +44,7 @@ CORE_SRCS=../../BRAddress.c \
 	../../BRWallet.c \
 	../../bcash/BRBCashAddr.c \
 	../../Java/BRCoreJni.c \
-	../../Java/com_breadwallet_core_BRCoreJniReference.c \
+	../../Java/com_elicoinwallet_core_BRCoreJniReference.c \
 	../util/BRUtilMath.c \
 	../util/BRUtilMathParse.c \
 	../util/BRUtilHex.c \
@@ -59,7 +59,7 @@ CORE_SRCS=../../BRAddress.c \
 	../BREthereumNetwork.c \
 	../BREthereumToken.c \
 	../BREthereumTransaction.c \
-	../BREthereumWallet.c 
+	../BREthereumWallet.c
 
 
 CORE_OBJS=$(CORE_SRCS:.c=.o)
@@ -78,12 +78,12 @@ compile: $(JNI_LIB) java_comp
 
 test: $(JNI_LIB) java_comp
 	java -Xss1m -Dlight.node.test -classpath build -Djava.library.path=. \
-		 com.breadwallet.core.ethereum.test.BREthereumLightNodeClientTest $(ARGS) # -D.
+		 com.elicoinwallet.core.ethereum.test.BREthereumLightNodeClientTest $(ARGS) # -D.
 
 debug: $(JNI_LIB) java_comp
 	java -Xss1m -Xdebug -Xrunjdwp:transport=dt_socket,address=8008,server=y,suspend=n \
 		 -Dlight.node.test -classpath build -Djava.library.path=. \
-		 com.breadwallet.core.ethereum.test.BREthereumLightNodeClientTest $(ARGS) # -D.
+		 com.elicoinwallet.core.ethereum.test.BREthereumLightNodeClientTest $(ARGS) # -D.
 
 $(JNI_LIB): $(JNI_OBJS) $(CORE_OBJS)
 	cc -dynamiclib -o $(JNI_LIB) $(JNI_OBJS) $(CORE_OBJS)
@@ -93,11 +93,11 @@ java_comp:	FORCE
 	javac -d build $(JAVA_SRCS)
 
 jni_hdr: java_comp
-	@(cd build/com/breadwallet/core/ethereum; \
+	@(cd build/com/elicoinwallet/core/ethereum; \
 	  for class in BREthereum*.class; do \
-	      javah -jni -d $(DIR) -classpath $(DIR)/build com.breadwallet.core.ethereum.$${class%%.class}; \
+	      javah -jni -d $(DIR) -classpath $(DIR)/build com.elicoinwallet.core.ethereum.$${class%%.class}; \
 	  done)
-	@rm -f com_breadwallet_core_ethereum_BREthereum*_*.h .h
+	@rm -f com_elicoinwallet_core_ethereum_BREthereum*_*.h .h
 
 clean:
 	rm -rf build $(JNI_OBJS) $(CORE_OBJS) $(JAVA_OBJS) $(JNI_LIB)
@@ -122,9 +122,9 @@ FORCE:
 # 	java -Djava.library.path=/Users/ebg Foo
 #
 
-# (cd ${APP}/app/build/intermediates/classes/debug/com/breadwallet/core; for class in BRCore*.class; do \
-#     javah -jni -d ${APP}/app/src/main/cpp/breadwallet-core/Java/ \
+# (cd ${APP}/app/build/intermediates/classes/debug/com/elicoinwallet/core; for class in BRCore*.class; do \
+#     javah -jni -d ${APP}/app/src/main/cpp/elicoinwallet-core/Java/ \
 #	-classpath ${APP}/app/build/intermediates/classes/debug/ \
-#	com.breadwallet.core.${class%%.class}; \
+#	com.elicoinwallet.core.${class%%.class}; \
 #	done)
 # 15RBcXQMTfebbAfUFeBbcDfs1fVvPayWdU

@@ -9,76 +9,76 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-            src/main/cpp/breadwallet-core/BRAddress.c
-            src/main/cpp/breadwallet-core/BRAddress.h
-            src/main/cpp/breadwallet-core/BRArray.h
-            src/main/cpp/breadwallet-core/BRBase58.c
-            src/main/cpp/breadwallet-core/BRBase58.h
-            src/main/cpp/breadwallet-core/BRBIP32Sequence.c
-            src/main/cpp/breadwallet-core/BRBIP32Sequence.h
-            src/main/cpp/breadwallet-core/BRBIP38Key.c
-            src/main/cpp/breadwallet-core/BRBIP38Key.h
-            src/main/cpp/breadwallet-core/BRBIP39Mnemonic.c
-            src/main/cpp/breadwallet-core/BRBIP39Mnemonic.h
-            src/main/cpp/breadwallet-core/BRBIP39WordsEn.h
-            src/main/cpp/breadwallet-core/BRBloomFilter.c
-            src/main/cpp/breadwallet-core/BRBloomFilter.h
-            src/main/cpp/breadwallet-core/BRCrypto.c
-            src/main/cpp/breadwallet-core/BRCrypto.h
-            src/main/cpp/breadwallet-core/BRInt.h
-            src/main/cpp/breadwallet-core/BRKey.c
-            src/main/cpp/breadwallet-core/BRKey.h
-            src/main/cpp/breadwallet-core/BRMerkleBlock.c
-            src/main/cpp/breadwallet-core/BRMerkleBlock.h
-            src/main/cpp/breadwallet-core/BRPaymentProtocol.c
-            src/main/cpp/breadwallet-core/BRPaymentProtocol.h
-            src/main/cpp/breadwallet-core/BRPeer.c
-            src/main/cpp/breadwallet-core/BRPeer.h
-            src/main/cpp/breadwallet-core/BRPeerManager.c
-            src/main/cpp/breadwallet-core/BRPeerManager.h
-            src/main/cpp/breadwallet-core/BRSet.c
-            src/main/cpp/breadwallet-core/BRSet.h
-            src/main/cpp/breadwallet-core/BRTransaction.c
-            src/main/cpp/breadwallet-core/BRTransaction.h
-            src/main/cpp/breadwallet-core/BRWallet.c
-            src/main/cpp/breadwallet-core/BRWallet.h
+            src/main/cpp/elicoinwallet-core/BRAddress.c
+            src/main/cpp/elicoinwallet-core/BRAddress.h
+            src/main/cpp/elicoinwallet-core/BRArray.h
+            src/main/cpp/elicoinwallet-core/BRBase58.c
+            src/main/cpp/elicoinwallet-core/BRBase58.h
+            src/main/cpp/elicoinwallet-core/BRBIP32Sequence.c
+            src/main/cpp/elicoinwallet-core/BRBIP32Sequence.h
+            src/main/cpp/elicoinwallet-core/BRBIP38Key.c
+            src/main/cpp/elicoinwallet-core/BRBIP38Key.h
+            src/main/cpp/elicoinwallet-core/BRBIP39Mnemonic.c
+            src/main/cpp/elicoinwallet-core/BRBIP39Mnemonic.h
+            src/main/cpp/elicoinwallet-core/BRBIP39WordsEn.h
+            src/main/cpp/elicoinwallet-core/BRBloomFilter.c
+            src/main/cpp/elicoinwallet-core/BRBloomFilter.h
+            src/main/cpp/elicoinwallet-core/BRCrypto.c
+            src/main/cpp/elicoinwallet-core/BRCrypto.h
+            src/main/cpp/elicoinwallet-core/BRInt.h
+            src/main/cpp/elicoinwallet-core/BRKey.c
+            src/main/cpp/elicoinwallet-core/BRKey.h
+            src/main/cpp/elicoinwallet-core/BRMerkleBlock.c
+            src/main/cpp/elicoinwallet-core/BRMerkleBlock.h
+            src/main/cpp/elicoinwallet-core/BRPaymentProtocol.c
+            src/main/cpp/elicoinwallet-core/BRPaymentProtocol.h
+            src/main/cpp/elicoinwallet-core/BRPeer.c
+            src/main/cpp/elicoinwallet-core/BRPeer.h
+            src/main/cpp/elicoinwallet-core/BRPeerManager.c
+            src/main/cpp/elicoinwallet-core/BRPeerManager.h
+            src/main/cpp/elicoinwallet-core/BRSet.c
+            src/main/cpp/elicoinwallet-core/BRSet.h
+            src/main/cpp/elicoinwallet-core/BRTransaction.c
+            src/main/cpp/elicoinwallet-core/BRTransaction.h
+            src/main/cpp/elicoinwallet-core/BRWallet.c
+            src/main/cpp/elicoinwallet-core/BRWallet.h
 
-                           src/main/cpp/breadwallet-core/Java/BRCoreJni.h
-                           src/main/cpp/breadwallet-core/Java/BRCoreJni.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreJniReference.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreJniReference.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreAddress.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreAddress.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreChainParams.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreChainParams.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCorePeer.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCorePeer.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreMasterPubKey.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreMasterPubKey.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreKey.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreKey.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreMerkleBlock.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreMerkleBlock.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCorePeerManager.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCorePeerManager.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreTransaction.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreTransaction.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreTransactionInput.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreTransactionInput.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreTransactionOutput.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreTransactionOutput.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCorePaymentProtocol.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCorePaymentProtocol.h
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreWallet.c
-                           src/main/cpp/breadwallet-core/Java/com_breadwallet_core_BRCoreWallet.h
+                           src/main/cpp/elicoinwallet-core/Java/BRCoreJni.h
+                           src/main/cpp/elicoinwallet-core/Java/BRCoreJni.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreJniReference.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreJniReference.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreAddress.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreAddress.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreChainParams.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreChainParams.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCorePeer.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCorePeer.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreMasterPubKey.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreMasterPubKey.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreKey.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreKey.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreMerkleBlock.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreMerkleBlock.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCorePeerManager.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCorePeerManager.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreTransaction.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreTransaction.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreTransactionInput.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreTransactionInput.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreTransactionOutput.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreTransactionOutput.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCorePaymentProtocol.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCorePaymentProtocol.h
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreWallet.c
+                           src/main/cpp/elicoinwallet-core/Java/com_elicoinwallet_core_BRCoreWallet.h
             )
 
 
-include_directories(src/main/cpp/breadwallet-core/Java)
-include_directories(src/main/cpp/breadwallet-core/)
-include_directories(src/main/cpp/breadwallet-core/secp256k1/include)
-include_directories(src/main/cpp/breadwallet-core/secp256k1/src)
-include_directories(src/main/cpp/breadwallet-core/secp256k1)
+include_directories(src/main/cpp/elicoinwallet-core/Java)
+include_directories(src/main/cpp/elicoinwallet-core/)
+include_directories(src/main/cpp/elicoinwallet-core/secp256k1/include)
+include_directories(src/main/cpp/elicoinwallet-core/secp256k1/src)
+include_directories(src/main/cpp/elicoinwallet-core/secp256k1)
 
 # -----------
 #
@@ -86,12 +86,12 @@ include_directories(src/main/cpp/breadwallet-core/secp256k1)
 #   Assume you've compiled the Java code, say as part of an Android project
 #
 PROJECT_DIR=<....>/app
-JNI_DIR=${PROJECT_DIR}/src/main/cpp/breadwallet-core/Java/
+JNI_DIR=${PROJECT_DIR}/src/main/cpp/elicoinwallet-core/Java/
 CLASSPATH=${PROJECT_DIR}/build/intermediates/classes/debug/
 
-(cd ~/Bread/CoreJNI/app/build/intermediates/classes/debug/com/breadwallet/core; \
+(cd ~/Bread/CoreJNI/app/build/intermediates/classes/debug/com/elicoinwallet/core; \
  for class in BRCore*.class; \
-   do javah -jni -d ${JNI_DIR} -classpath ${CLASSPATH} com.breadwallet.core.${class%%.class}; \
+   do javah -jni -d ${JNI_DIR} -classpath ${CLASSPATH} com.elicoinwallet.core.${class%%.class}; \
    done)
    
 # Some headers will be generated that are empty - particularly for private interfaces/class.

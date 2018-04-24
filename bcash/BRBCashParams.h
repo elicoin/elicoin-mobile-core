@@ -2,7 +2,7 @@
 //  BRBCashParams.h
 //
 //  Created by Aaron Voisine on 1/10/18.
-//  Copyright (c) 2019 breadwallet LLC
+//  Copyright (c) 2019 elicoinwallet LLC
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@
 #include "BRInt.h"
 
 static const char *BRBCashDNSSeeds[] = {
-    "seed-abc.breadwallet.com.", "seed.bitcoinabc.org.", "seed-abc.bitcoinforks.org.", "seed.bitcoinunlimited.info.",
+    "seed-abc.elicoinwallet.com.", "seed.bitcoinabc.org.", "seed-abc.bitcoinforks.org.", "seed.bitcoinunlimited.info.",
     "seed.bitprim.org.", "seed.deadalnix.me.", NULL
 };
 

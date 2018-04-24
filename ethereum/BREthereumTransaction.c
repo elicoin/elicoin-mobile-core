@@ -1,9 +1,9 @@
 //
 //  BBREthereumTransaction.c
-//  breadwallet-core Ethereum
+//  elicoinwallet-core Ethereum
 //
 //  Created by Ed Gamble on 2/21/2018.
-//  Copyright (c) 2018 breadwallet LLC
+//  Copyright (c) 2018 elicoinwallet LLC
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal

@@ -2,7 +2,7 @@
 //  BRWallet.h
 //
 //  Created by Aaron Voisine on 9/1/15.
-//  Copyright (c) 2015 breadwallet LLC
+//  Copyright (c) 2015 elicoinwallet LLC
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal

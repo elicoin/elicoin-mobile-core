@@ -5,19 +5,19 @@ CINC_DIR=/usr/include
 
 JNI_LIB=libCore.jnilib
 
-JNI_SRCS=com_breadwallet_core_BRCoreAddress.c \
-	com_breadwallet_core_BRCoreChainParams.c \
-	com_breadwallet_core_BRCoreJniReference.c \
-	com_breadwallet_core_BRCoreKey.c \
-	com_breadwallet_core_BRCoreMasterPubKey.c \
-	com_breadwallet_core_BRCoreMerkleBlock.c \
-	com_breadwallet_core_BRCorePaymentProtocol.c \
-	com_breadwallet_core_BRCorePeer.c \
-	com_breadwallet_core_BRCorePeerManager.c \
-	com_breadwallet_core_BRCoreTransaction.c \
-	com_breadwallet_core_BRCoreTransactionInput.c \
-	com_breadwallet_core_BRCoreTransactionOutput.c \
-	com_breadwallet_core_BRCoreWallet.c \
+JNI_SRCS=com_elicoinwallet_core_BRCoreAddress.c \
+	com_elicoinwallet_core_BRCoreChainParams.c \
+	com_elicoinwallet_core_BRCoreJniReference.c \
+	com_elicoinwallet_core_BRCoreKey.c \
+	com_elicoinwallet_core_BRCoreMasterPubKey.c \
+	com_elicoinwallet_core_BRCoreMerkleBlock.c \
+	com_elicoinwallet_core_BRCorePaymentProtocol.c \
+	com_elicoinwallet_core_BRCorePeer.c \
+	com_elicoinwallet_core_BRCorePeerManager.c \
+	com_elicoinwallet_core_BRCoreTransaction.c \
+	com_elicoinwallet_core_BRCoreTransactionInput.c \
+	com_elicoinwallet_core_BRCoreTransactionOutput.c \
+	com_elicoinwallet_core_BRCoreWallet.c \
 	BRCoreJni.c
 
 JNI_OBJS=$(JNI_SRCS:.c=.o)
@@ -25,26 +25,26 @@ JNI_OBJS=$(JNI_SRCS:.c=.o)
 # JNI Header Files that we are interest in keeping (that are not empty)
 JNI_HDRS=$(JNI_SRCS:.c=.h)
 
-JAVA_SRCS=root/com/breadwallet/core/BRCoreAddress.java \
-	root/com/breadwallet/core/BRCoreChainParams.java \
-	root/com/breadwallet/core/BRCoreJniReference.java \
-	root/com/breadwallet/core/BRCoreKey.java \
-	root/com/breadwallet/core/BRCoreMasterPubKey.java \
-	root/com/breadwallet/core/BRCoreMerkleBlock.java \
-	root/com/breadwallet/core/BRCorePaymentProtocolEncryptedMessage.java \
-	root/com/breadwallet/core/BRCorePaymentProtocolInvoiceRequest.java \
-	root/com/breadwallet/core/BRCorePaymentProtocolMessage.java \
-	root/com/breadwallet/core/BRCorePaymentProtocolPayment.java \
-	root/com/breadwallet/core/BRCorePaymentProtocolACK.java \
-	root/com/breadwallet/core/BRCorePaymentProtocolRequest.java \
-	root/com/breadwallet/core/BRCorePeer.java \
-	root/com/breadwallet/core/BRCorePeerManager.java \
-	root/com/breadwallet/core/BRCoreTransaction.java \
-	root/com/breadwallet/core/BRCoreTransactionInput.java \
-	root/com/breadwallet/core/BRCoreTransactionOutput.java \
-	root/com/breadwallet/core/BRCoreWallet.java \
-	root/com/breadwallet/core/BRCoreWalletManager.java \
-	root/com/breadwallet/core/test/BRWalletManager.java
+JAVA_SRCS=root/com/elicoinwallet/core/BRCoreAddress.java \
+	root/com/elicoinwallet/core/BRCoreChainParams.java \
+	root/com/elicoinwallet/core/BRCoreJniReference.java \
+	root/com/elicoinwallet/core/BRCoreKey.java \
+	root/com/elicoinwallet/core/BRCoreMasterPubKey.java \
+	root/com/elicoinwallet/core/BRCoreMerkleBlock.java \
+	root/com/elicoinwallet/core/BRCorePaymentProtocolEncryptedMessage.java \
+	root/com/elicoinwallet/core/BRCorePaymentProtocolInvoiceRequest.java \
+	root/com/elicoinwallet/core/BRCorePaymentProtocolMessage.java \
+	root/com/elicoinwallet/core/BRCorePaymentProtocolPayment.java \
+	root/com/elicoinwallet/core/BRCorePaymentProtocolACK.java \
+	root/com/elicoinwallet/core/BRCorePaymentProtocolRequest.java \
+	root/com/elicoinwallet/core/BRCorePeer.java \
+	root/com/elicoinwallet/core/BRCorePeerManager.java \
+	root/com/elicoinwallet/core/BRCoreTransaction.java \
+	root/com/elicoinwallet/core/BRCoreTransactionInput.java \
+	root/com/elicoinwallet/core/BRCoreTransactionOutput.java \
+	root/com/elicoinwallet/core/BRCoreWallet.java \
+	root/com/elicoinwallet/core/BRCoreWalletManager.java \
+	root/com/elicoinwallet/core/test/BRWalletManager.java
 
 JAVA_OBJS=$(JAVA_SRCS:.java=.class)
 
@@ -80,12 +80,12 @@ compile: $(JNI_LIB) java_comp
 
 test: $(JNI_LIB) java_comp
 	java -Xss1m -Dwallet.test -classpath build -Djava.library.path=. \
-		 com.breadwallet.core.test.BRWalletManager $(ARGS) # -D.
+		 com.elicoinwallet.core.test.BRWalletManager $(ARGS) # -D.
 
 debug: $(JNI_LIB) java_comp
 	java -Xss1m -Xdebug -Xrunjdwp:transport=dt_socket,address=8008,server=y,suspend=n \
 		 -Dwallet.test -classpath build -Djava.library.path=. \
-		 com.breadwallet.core.test.BRWalletManager $(ARGS) # -D.
+		 com.elicoinwallet.core.test.BRWalletManager $(ARGS) # -D.
 
 $(JNI_LIB): $(JNI_OBJS) $(CORE_OBJS)
 	cc -dynamiclib -o $(JNI_LIB) $(JNI_OBJS) $(CORE_OBJS)
@@ -95,11 +95,11 @@ java_comp:	FORCE
 	javac -d build $(JAVA_SRCS)
 
 jni_hdr: java_comp
-	@(cd build/com/breadwallet/core; \
+	@(cd build/com/elicoinwallet/core; \
 	  for class in BRCore*.class; do \
-	      javah -jni -d $(DIR) -classpath $(DIR)/build com.breadwallet.core.$${class%%.class}; \
+	      javah -jni -d $(DIR) -classpath $(DIR)/build com.elicoinwallet.core.$${class%%.class}; \
 	  done)
-	@rm -f com_breadwallet_core_BRCoreWalletManager.h com_breadwallet_core_BRCore*_*.h .h
+	@rm -f com_elicoinwallet_core_BRCoreWalletManager.h com_elicoinwallet_core_BRCore*_*.h .h
 
 #            if [[ "$${class}" != "*\"$\"*" ]]; then
 #           fi
@@ -127,9 +127,9 @@ FORCE:
 # 	java -Djava.library.path=/Users/ebg Foo
 #
 
-# (cd ${APP}/app/build/intermediates/classes/debug/com/breadwallet/core; for class in BRCore*.class; do \
-#     javah -jni -d ${APP}/app/src/main/cpp/breadwallet-core/Java/ \
+# (cd ${APP}/app/build/intermediates/classes/debug/com/elicoinwallet/core; for class in BRCore*.class; do \
+#     javah -jni -d ${APP}/app/src/main/cpp/elicoinwallet-core/Java/ \
 #	-classpath ${APP}/app/build/intermediates/classes/debug/ \
-#	com.breadwallet.core.${class%%.class}; \
+#	com.elicoinwallet.core.${class%%.class}; \
 #	done)
 # 15RBcXQMTfebbAfUFeBbcDfs1fVvPayWdU

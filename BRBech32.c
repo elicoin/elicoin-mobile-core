@@ -1,9 +1,9 @@
 //
 //  BRBech32.c
-//  breadwallet-core
+//  elicoinwallet-core
 //
 //  Created by Aaron Voisine on 1/20/18.
-//  Copyright (c) 2018 breadwallet LLC
+//  Copyright (c) 2018 elicoinwallet LLC
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal

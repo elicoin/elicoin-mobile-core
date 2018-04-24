@@ -3,7 +3,7 @@
 //  ethereum
 //
 //  Created by Ed Gamble on 3/2/18.
-//  Copyright © 2018 breadwallet. All rights reserved.
+//  Copyright © 2018 elicoinwallet. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
