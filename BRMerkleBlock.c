@@ -274,8 +274,6 @@ static UInt256 _BRMerkleBlockRootR(const BRMerkleBlock *block, size_t *hashIdx, 
 // target is correct for the block's height in the chain - use BRMerkleBlockVerifyDifficulty() for that
 int BRMerkleBlockIsValid(const BRMerkleBlock *block, uint32_t currentTime)
 {
-    // TODO: it
-    return 1;
     assert(block != NULL);
 
     // target is in "compact" format, where the most significant byte is the size of resulting value in bytes, the next
@@ -297,6 +295,9 @@ int BRMerkleBlockIsValid(const BRMerkleBlock *block, uint32_t currentTime)
 
     if (size > 3) UInt32SetLE(&t.u8[size - 3], target);
     else UInt32SetLE(t.u8, target >> (3 - size)*8);
+
+    // TODO: it
+    return 1;
 
     for (int i = sizeof(t) - 1; r && i >= 0; i--) { // check proof-of-work
         if (block->blockHash.u8[i] < t.u8[i]) break;
