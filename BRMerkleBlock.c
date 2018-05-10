@@ -141,6 +141,13 @@ BRMerkleBlock *BRMerkleBlockParse(const uint8_t *buf, size_t bufLen)
             if (block->flags) memcpy(block->flags, &buf[off], len);
         }
 
+        // Elicoin yescryptR16 POW hash
+        char input_buffer[80];
+        for(uint8_t i = 0;i < 80;i++){
+          input_buffer[i] = buf[i];
+        }
+        yescryptR16(&block->powHash, &input_buffer);
+        // former double sha256 hash
         BRSHA256_2(&block->blockHash, buf, 80);
     }
 
@@ -274,6 +281,8 @@ static UInt256 _BRMerkleBlockRootR(const BRMerkleBlock *block, size_t *hashIdx, 
 // target is correct for the block's height in the chain - use BRMerkleBlockVerifyDifficulty() for that
 int BRMerkleBlockIsValid(const BRMerkleBlock *block, uint32_t currentTime)
 {
+    // TODO: it
+    return 1;
     assert(block != NULL);
 
     // target is in "compact" format, where the most significant byte is the size of resulting value in bytes, the next
@@ -296,13 +305,18 @@ int BRMerkleBlockIsValid(const BRMerkleBlock *block, uint32_t currentTime)
     if (size > 3) UInt32SetLE(&t.u8[size - 3], target);
     else UInt32SetLE(t.u8, target >> (3 - size)*8);
 
-    // TODO: it
-    return 1;
+    // Former POW check
+    // for (int i = sizeof(t) - 1; r && i >= 0; i--) { // check proof-of-work
+        // if (block->blockHash.u8[i] < t.u8[i]) break;
+        // if (block->blockHash.u8[i] > t.u8[i]) r = 0;
+    // }
 
-    for (int i = sizeof(t) - 1; r && i >= 0; i--) { // check proof-of-work
-        if (block->blockHash.u8[i] < t.u8[i]) break;
-        if (block->blockHash.u8[i] > t.u8[i]) r = 0;
+    // Elicoin yescryptR16 POW check
+    for (int i = sizeof(t) - 1; r && i >= 0; i--) { // check yescryptR16 proof-of-work
+        if (block->powHash.u8[i] < t.u8[i]) break;
+        if (block->powHash.u8[i] > t.u8[i]) r = 0;
     }
+
 
     return r;
 }
