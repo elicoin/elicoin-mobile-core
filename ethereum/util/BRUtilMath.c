@@ -39,6 +39,108 @@ createUInt256 (uint64_t value) {
     return result;
 }
 
+extern unsigned int
+bitsUInt256(UInt256 num){
+    unsigned int count = sizeof (UInt256) / sizeof(uint32_t);
+    for (int pos = count - 1; pos >= 0; pos--) {
+        if (num.u32[pos]) {
+            for (int bits = 31; bits > 0; bits--) {
+                if (num.u32[pos] & 1 << bits)
+                    return 32 * pos + bits + 1;
+            }
+            return 32 * pos + 1;
+        }
+    }
+    return 0;
+}
+
+extern UInt256
+shiftUInt256Left (UInt256 num, int shift){
+    UInt256 a = num;
+    unsigned int count = sizeof (UInt256) / sizeof(uint32_t);
+    for(int i = 0;i < count; i++){
+        num.u32[i] = 0;
+    }
+    int k = shift / 32;
+    shift = shift % 32;
+    for(int i = 0; i < count;i++){
+        if(i + k + 1 < count && shift != 0)
+            num.u32[i + k + 1] |= (a.u32[i] >> (32 - shift));
+        if(i + k < count)
+            num.u32[i + k] |= (a.u32[i] << shift);
+    }
+    return num;
+}
+
+extern UInt256
+shiftUInt256Right (UInt256 num, int shift){
+    UInt256 a = num;
+    unsigned int count = sizeof (UInt256) / sizeof(uint32_t);
+    for(int i = 0;i < count; i++){
+        num.u32[i] = 0;
+    }
+    int k = shift / 32;
+    shift = shift % 32;
+    for (int i = 0; i < count; i++) {
+        if (i - k - 1 >= 0 && shift != 0)
+            num.u32[i - k - 1] |= (a.u32[i] << (32 - shift));
+        if (i - k >= 0)
+            num.u32[i - k] |= (a.u32[i] >> shift);
+    }
+    return num;
+}
+
+extern uint32_t
+UInt256GetCompact(UInt256 nFull){
+    unsigned int nSize = (bitsUInt256(nFull) + 7) / 8;
+    uint32_t nCompact = 0;
+    if (nSize <= 3) {
+        nCompact = nFull.u64[0] << 8 * (3 - nSize);
+    } else {
+        UInt256 bn = shiftUInt256Right(nFull, 8 * (nSize - 3));
+        nCompact = bn.u64[0];
+    }
+
+    // The 0x00800000 bit denotes the sign.
+    // Thus, if it is already set, divide the mantissa by 256 and increase the exponent.
+    if (nCompact & 0x00800000) {
+        nCompact >>= 8;
+        nSize++;
+    }
+    assert((nCompact & ~0x007fffff) == 0);
+    assert(nSize < 256);
+    nCompact |= nSize << 24;
+    return nCompact;
+}
+
+extern UInt256
+createUInt256FromCompact (uint32_t nCompact){
+    UInt256 t = UINT256_ZERO;
+    uint32_t target = nCompact & 0x00ffffff;
+    uint32_t size = nCompact >> 24;
+    if (size > 3) UInt32SetLE(&t.u8[size - 3], target);
+        else UInt32SetLE(t.u8, target >> (3 - size)*8);
+    return t;
+}
+
+extern UInt256
+createUInt256FromCompactVersion2 (uint32_t nCompact) {
+    UInt256 result;
+    int nSize = nCompact >> 24;
+    uint32_t nWord = nCompact & 0x007fffff;
+    if(nSize <= 3){
+        nWord >>= 8 * (3 - nSize);
+        UInt256 tmp = { .u32 = { nWord, 0, 0, 0, 0, 0, 0, 0}};
+        result = tmp;
+    }else{
+        UInt256 tmp = { .u32 = { nWord, 0, 0, 0, 0, 0, 0, 0}};
+        result = tmp;
+        result = shiftUInt256Left(result,8 * (nSize - 3));
+    }
+    return result;
+}
+
+
 extern UInt256
 createUInt256Power (uint8_t digits, int *overflow) {
     if (digits < 20) {    // 10^19 fits in uint64_t
@@ -57,10 +159,10 @@ createUInt256Power (uint8_t digits, int *overflow) {
 extern UInt256
 addUInt256_Overflow (const UInt256 y, const UInt256 x, int *overflow) {
     assert (overflow != NULL);
-    
+
     UInt256 z = UINT256_ZERO;
     unsigned int count = sizeof (UInt256) / sizeof(uint32_t);
-    
+
     // x = xa*2^0 + xb*2^32 + ...
     // y = ya*2^0 + yb*2^32 + ...
     // z = (xa + ya)*2^0 + (xb + yb)*2^32 + ...
@@ -70,7 +172,7 @@ addUInt256_Overflow (const UInt256 y, const UInt256 x, int *overflow) {
         carry = sum >> 32;
         z.u32[i] = (uint32_t) sum;
     }
-    
+
     *overflow = (int) carry;
     return (0 != carry
             ? UINT256_ZERO
@@ -81,7 +183,7 @@ extern UInt512
 addUInt256 (UInt256 x, UInt256 y) {
     UInt512 z = UINT512_ZERO;
     unsigned int count = sizeof (UInt256) / sizeof(uint32_t);
-    
+
     // x = xa*2^0 + xb*2^32 + ...
     // y = ya*2^0 + yb*2^32 + ...
     // z = (xa + ya)*2^0 + (xb + yb)*2^32 + ...
@@ -99,7 +201,7 @@ static UInt256
 subUInt256_x_gt_y (UInt256 x, UInt256 y) {
     UInt256 z = UINT256_ZERO;
     unsigned int count = sizeof (UInt256) / sizeof(uint32_t);
-    
+
     uint64_t borrow = 0;
     for (int i = 0; i < count; i++) {
         uint64_t diff;
@@ -138,9 +240,9 @@ extern UInt512
 mulUInt256 (const UInt256 x, const UInt256 y) {
     //  assert (__LITTLE_ENDIAN__ == BYTE_ORDER);
     UInt512 z = UINT512_ZERO;
-    
+
     unsigned int count = sizeof (UInt256) / sizeof(uint32_t);
-    
+
     // Use 'grade school' long multiplication in base 32.  For UInt256 we'll have 8 32-bit value
     // and perform 64 32-bit multiplications.  A more sophisticated algorith, e.g. Katasuba, can
     // perform just 27 32-bit multiplications.  For our application, not a big enough savings for
@@ -251,10 +353,10 @@ tooBigUInt256 (UInt512 x) {
 extern UInt256
 coerceUInt256 (UInt512  x, int *overflow) {
     assert (NULL != overflow);
-    
+
     *overflow = tooBigUInt256(x);
     if (*overflow) return UINT256_ZERO;
-    
+
     UInt256 result;
     result.u64[0] = x.u64[0];
     result.u64[1] = x.u64[1];
@@ -271,5 +373,3 @@ compareUInt256 (UInt256 x, UInt256 y) {
                ? +1
                : -1));
 }
-
-

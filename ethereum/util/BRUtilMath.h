@@ -51,6 +51,18 @@ extern UInt256
 createUInt256 (uint64_t value);
 
 /**
+ * Get compact uint32_t from UInt256.
+ */
+extern uint32_t
+UInt256GetCompact(UInt256 nFull);
+
+/**
+ * Create from a single uint64_t value.
+ */
+extern UInt256
+createUInt256FromCompact (uint32_t nCompact);
+
+/**
  * Create as `(expt 10 power)` where power < 20 is required.
  */
 extern UInt256
@@ -88,10 +100,28 @@ createUInt256Parse (const char *number, int base, BRCoreParseStatus *status);
  */
 extern UInt256
 createUInt256ParseDecimal (const char *number, int decimals, BRCoreParseStatus *status);
-  
-  /**
- * Return `x + y`
- */
+
+/**
+* Return number of bits
+*/
+extern unsigned int
+bitsUInt256(UInt256 num);
+
+/**
+* Return `num << shift`
+*/
+extern UInt256
+shiftUInt256Left(UInt256 num, int shift);
+
+/**
+* Return `num >> shift`
+*/
+extern UInt256
+shiftUInt256Right(UInt256 num, int shift);
+
+/**
+* Return `x + y`
+*/
 extern UInt512
 addUInt256 (UInt256 x, UInt256 y);
 

@@ -57,11 +57,11 @@ static const char *BRTestNetDNSSeeds[] = {
 // blockchain checkpoints - these are also used as starting points for partial chain downloads, so they must be at
 // difficulty transition boundaries in order to verify the block difficulty at the immediately following transition
 static const BRCheckPoint BRMainNetCheckpoints[] = {
-    {      0, uint256("51aea10af5d8bf104c96cde790d51a5f6ea6cc5d80e49e1aa2389cb5d2166dec"), 1519589181, 0x20000fff },
-    {  20160, uint256("066b8ec9ca1e83ca2684563901ab0b24a96ad6e7b98ae271d1afd0c7f39dea37"), 1520955319, 0x1e00d00d },
-    {  40320, uint256("fa4bc1f993ec7ad742c74d1b493887efba0f5210b87bb864dad3495d49275d2c"), 1522225851, 0x1e00910d },
-    {  60480, uint256("0dfdbb3753b2760fe715d7f0f8c2cf743315f175b35812b4b1da5b95f00d6d4e"), 1523496730, 0x1e009bec },
-    {  80640, uint256("be60ebe224aef503e12203cd927d1d0adf20d0859d4c564adfb7bbaa4e6a8154"), 1524766732, 0x1e00c589 }
+    {      0, uint256("51aea10af5d8bf104c96cde790d51a5f6ea6cc5d80e49e1aa2389cb5d2166dec"), 1519589181, 0x20000fff }
+    // {  20160, uint256("066b8ec9ca1e83ca2684563901ab0b24a96ad6e7b98ae271d1afd0c7f39dea37"), 1520955319, 0x1e00d00d },
+    // {  40320, uint256("fa4bc1f993ec7ad742c74d1b493887efba0f5210b87bb864dad3495d49275d2c"), 1522225851, 0x1e00910d },
+    // {  60480, uint256("0dfdbb3753b2760fe715d7f0f8c2cf743315f175b35812b4b1da5b95f00d6d4e"), 1523496730, 0x1e009bec },
+    // {  80640, uint256("be60ebe224aef503e12203cd927d1d0adf20d0859d4c564adfb7bbaa4e6a8154"), 1524766732, 0x1e00c589 }
 };
 
 static const BRCheckPoint BRTestNetCheckpoints[] = {
@@ -70,23 +70,23 @@ static const BRCheckPoint BRTestNetCheckpoints[] = {
 
 static int BRMainNetVerifyDifficulty(const BRMerkleBlock *block, const BRSet *blockSet)
 {
-    const BRMerkleBlock *previous, *b = NULL;
-    uint32_t i;
+  // const BRMerkleBlock *previous, *b = NULL;
+  // uint32_t i;
 
     assert(block != NULL);
     assert(blockSet != NULL);
 
     // check if we hit a difficulty transition, and find previous transition block
-    if ((block->height % BLOCK_DIFFICULTY_INTERVAL) == 0) {
-        for (i = 0, b = block; b && i < BLOCK_DIFFICULTY_INTERVAL; i++) {
-            b = BRSetGet(blockSet, &b->prevBlock);
-        }
-    }
-
-    previous = BRSetGet(blockSet, &block->prevBlock);
-    // TODO: it
-    return 1;
+    // if ((block->height % BLOCK_DIFFICULTY_INTERVAL) == 0) {
+    //     for (i = 0, b = block; b && i < BLOCK_DIFFICULTY_INTERVAL; i++) {
+    //         b = BRSetGet(blockSet, &b->prevBlock);
+    //     }
+    // }
+    //
+    // previous = BRSetGet(blockSet, &block->prevBlock);
     // return BRMerkleBlockVerifyDifficulty(block, previous, (b) ? b->timestamp : 0);
+
+    return BRMerkleBlockVerifyDifficultyDarkGravityWave(block,blockSet);
 }
 
 static int BRTestNetVerifyDifficulty(const BRMerkleBlock *block, const BRSet *blockSet)

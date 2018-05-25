@@ -30,6 +30,8 @@
 #include <limits.h>
 #include <string.h>
 #include <assert.h>
+#include "BRChainParams.h"
+#include "ethereum/util/BRUtilMath.h"
 
 // elicoin MIN_DIFF: 000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 // 0x1d00ffff ->     0x00000000ffff0000000000000000000000000000000000000000000000000000
@@ -141,12 +143,18 @@ BRMerkleBlock *BRMerkleBlockParse(const uint8_t *buf, size_t bufLen)
             if (block->flags) memcpy(block->flags, &buf[off], len);
         }
 
-        // Elicoin yescryptR16 POW hash
-        char input_buffer[80];
-        for(uint8_t i = 0;i < 80;i++){
-          input_buffer[i] = buf[i];
+        // Elicoin yescryptR16 POW hash  ... set computeYescryptR16=1 for activation of YescryptR16 computation
+        uint8_t computeYescryptR16 = 0;
+        if(computeYescryptR16){
+          char input_buffer[80];
+          for(uint8_t i = 0;i < 80;i++){
+            input_buffer[i] = buf[i];
+          }
+          yescryptR16(&block->powHash, &input_buffer);
+        }else{
+          block->powHash = UINT256_ZERO;
         }
-        yescryptR16(&block->powHash, &input_buffer);
+
         // former double sha256 hash
         BRSHA256_2(&block->blockHash, buf, 80);
     }
@@ -281,8 +289,6 @@ static UInt256 _BRMerkleBlockRootR(const BRMerkleBlock *block, size_t *hashIdx, 
 // target is correct for the block's height in the chain - use BRMerkleBlockVerifyDifficulty() for that
 int BRMerkleBlockIsValid(const BRMerkleBlock *block, uint32_t currentTime)
 {
-    // TODO: it
-    return 1;
     assert(block != NULL);
 
     // target is in "compact" format, where the most significant byte is the size of resulting value in bytes, the next
@@ -311,11 +317,11 @@ int BRMerkleBlockIsValid(const BRMerkleBlock *block, uint32_t currentTime)
         // if (block->blockHash.u8[i] > t.u8[i]) r = 0;
     // }
 
-    // Elicoin yescryptR16 POW check
-    for (int i = sizeof(t) - 1; r && i >= 0; i--) { // check yescryptR16 proof-of-work
-        if (block->powHash.u8[i] < t.u8[i]) break;
-        if (block->powHash.u8[i] > t.u8[i]) r = 0;
-    }
+    // Elicoin yescryptR16 POW check ... if you want to check yescryptR16 set also the variable 'computeYescryptR16' to 1
+    // for (int i = sizeof(t) - 1; r && i >= 0; i--) { // check yescryptR16 proof-of-work
+    //     if (block->powHash.u8[i] < t.u8[i]) break;
+    //     if (block->powHash.u8[i] > t.u8[i]) r = 0;
+    // }
 
 
     return r;
@@ -336,6 +342,71 @@ int BRMerkleBlockContainsTxHash(const BRMerkleBlock *block, UInt256 txHash)
     return r;
 }
 
+// verifies the block difficulty using the Dark Gravity Vawe algorithm version 3
+int BRMerkleBlockVerifyDifficultyDarkGravityWave(const BRMerkleBlock *block, const BRSet *blockSet){
+    assert(block != NULL);
+    assert(blockSet != NULL);
+    int r = 1;
+
+    const BRCheckPoint *checkpoints = BRMainNetParams.checkpoints;
+    size_t checkpointsCount = BRMainNetParams.checkpointsCount;
+    uint64_t lastCheckpointIndex = checkpoints[checkpointsCount-1].height;
+
+    uint32_t index = block->height-1;
+    UInt256 bnPowLimit = createUInt256FromCompact(MAX_PROOF_OF_WORK);
+    uint32_t nPastBlocks = 24;
+    uint32_t nPowTargetSpacing = 1 * 60; // Elicoin full node - chainparams.cpp
+
+    // make sure we have at least (nPastBlocks + 1) blocks
+    if(index <= nPastBlocks || index <= lastCheckpointIndex + nPastBlocks){
+        r = 1;
+        return r;
+    }
+
+    const BRMerkleBlock *aBlock = BRSetGet(blockSet,&block->prevBlock);
+    const BRMerkleBlock *lastBlock = BRSetGet(blockSet,&block->prevBlock);
+
+    UInt256 bnPastTargetAvg = UINT256_ZERO;
+    for(uint32_t nCountBlocks = 1; nCountBlocks <= nPastBlocks; nCountBlocks++){
+        UInt256 bnTarget = createUInt256FromCompact(aBlock->target);
+        if(nCountBlocks == 1){
+            bnPastTargetAvg = bnTarget;
+        }else{
+            uint32_t rem = 0;
+            int overflow = 0;
+            bnPastTargetAvg = divUInt256_Small(addUInt256_Overflow(mulUInt256_Small(bnPastTargetAvg,nCountBlocks,&overflow), bnTarget,&overflow), (nCountBlocks + 1), &rem);
+        }
+        if(nCountBlocks != nPastBlocks) {
+            aBlock = BRSetGet(blockSet,&aBlock->prevBlock);
+        }
+    }
+
+    UInt256 bnNew = bnPastTargetAvg;
+    uint32_t nActualTimespan = lastBlock->timestamp - aBlock->timestamp;
+    uint32_t nTargetTimespan = nPastBlocks * nPowTargetSpacing;
+
+    if (nActualTimespan < nTargetTimespan/3)
+        nActualTimespan = nTargetTimespan/3;
+    if (nActualTimespan > nTargetTimespan*3)
+        nActualTimespan = nTargetTimespan*3;
+
+    int overflow;
+    uint32_t rem;
+    bnNew = mulUInt256_Small(bnNew,nActualTimespan,&overflow);
+    bnNew = divUInt256_Small(bnNew,nTargetTimespan,&rem);
+
+    if(compareUInt256(bnNew,bnPowLimit) == 1){
+      bnNew = bnPowLimit;
+    }
+
+    uint32_t bnNewCompact = UInt256GetCompact(bnNew);
+    if(bnNewCompact!=block->target){
+        r = 0;
+    }
+
+    return r;
+}
+
 // verifies the block difficulty target is correct for the block's position in the chain
 // transitionTime is the timestamp of the block at the previous difficulty transition
 // transitionTime may be 0 if block->height is not a multiple of BLOCK_DIFFICULTY_INTERVAL
@@ -349,10 +420,7 @@ int BRMerkleBlockContainsTxHash(const BRMerkleBlock *block, UInt256 txHash)
 // intuitively named MAX_PROOF_OF_WORK... since larger values are less difficult.
 int BRMerkleBlockVerifyDifficulty(const BRMerkleBlock *block, const BRMerkleBlock *previous, uint32_t transitionTime)
 {
-    // TODO: it
-    return 1;
     int r = 1;
-
     assert(block != NULL);
     assert(previous != NULL);
 
