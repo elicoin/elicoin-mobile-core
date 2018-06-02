@@ -366,6 +366,12 @@ int BRMerkleBlockVerifyDifficultyDarkGravityWave(const BRMerkleBlock *block, con
     const BRMerkleBlock *aBlock = BRSetGet(blockSet,&block->prevBlock);
     const BRMerkleBlock *lastBlock = BRSetGet(blockSet,&block->prevBlock);
 
+    // This has nothing to do with DarkGravityWave, but we have the previous block
+    // available here so we will take the advantege of that.
+    if (! aBlock || !UInt256Eq(block->prevBlock, aBlock->blockHash) || block->height != aBlock->height + 1){
+      r = 0;
+    }
+
     UInt256 bnPastTargetAvg = UINT256_ZERO;
     for(uint32_t nCountBlocks = 1; nCountBlocks <= nPastBlocks; nCountBlocks++){
         UInt256 bnTarget = createUInt256FromCompact(aBlock->target);
