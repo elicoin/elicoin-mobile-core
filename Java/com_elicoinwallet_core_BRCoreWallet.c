@@ -344,7 +344,7 @@ JNIEXPORT jlong JNICALL Java_com_elicoinwallet_core_BRCoreWallet_getDefaultFeePe
  */
 JNIEXPORT jobject JNICALL
 Java_com_elicoinwallet_core_BRCoreWallet_createTransaction
-        (JNIEnv *env, jobject thisObject, jlong amount, jobject addressObject) {
+        (JNIEnv *env, jobject thisObject, jlong amount, jobject addressObject, jlong fee) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference(env, thisObject);
     BRAddress *address = (BRAddress *) getJNIReference(env, addressObject);
 
@@ -352,7 +352,7 @@ Java_com_elicoinwallet_core_BRCoreWallet_createTransaction
     // to cover the transaction amount
     BRTransaction *transaction = BRWalletCreateTransaction(wallet,
                                                            (uint64_t) amount,
-                                                           (const char *) address->s);
+                                                           (const char *) address->s, (uint64_t) fee);
 
     return NULL == transaction
            ? NULL
@@ -378,7 +378,7 @@ JNIEXPORT jobject JNICALL Java_com_elicoinwallet_core_BRCoreWallet_createTransac
     }
 
     // It appears that the outputs and their content are not 'held' by the Core, in any way.
-    BRTransaction *transaction = BRWalletCreateTxForOutputs(wallet, outputs, outputsCount);
+    BRTransaction *transaction = BRWalletCreateTxForOutputs(wallet, outputs, outputsCount, 0);
 
     if (NULL != outputs) free (outputs);
 

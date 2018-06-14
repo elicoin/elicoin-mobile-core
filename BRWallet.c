@@ -549,24 +549,29 @@ int BRWalletAddressIsUsed(BRWallet *wallet, const char *addr)
 
 // returns an unsigned transaction that sends the specified amount from the wallet to the given address
 // result must be freed by calling BRTransactionFree()
-BRTransaction *BRWalletCreateTransaction(BRWallet *wallet, uint64_t amount, const char *addr)
+BRTransaction *BRWalletCreateTransaction(BRWallet *wallet, uint64_t amount, const char *addr, uint64_t fee)
 {
     BRTxOutput o = BR_TX_OUTPUT_NONE;
     
     assert(wallet != NULL);
     assert(amount > 0);
+    assert(fee >= 0);
     assert(addr != NULL && BRAddressIsValid(addr));
     o.amount = amount;
     BRTxOutputSetAddress(&o, addr);
-    return BRWalletCreateTxForOutputs(wallet, &o, 1);
+    return BRWalletCreateTxForOutputs(wallet, &o, 1, fee);
 }
 
 // returns an unsigned transaction that satisifes the given transaction outputs
 // result must be freed by calling BRTransactionFree()
-BRTransaction *BRWalletCreateTxForOutputs(BRWallet *wallet, const BRTxOutput outputs[], size_t outCount)
+BRTransaction *BRWalletCreateTxForOutputs(BRWallet *wallet, const BRTxOutput outputs[], size_t outCount, uint64_t feeAmount)
 {
+    if(feeAmount == 0){
+        feeAmount = 1;
+    }
+
     BRTransaction *tx, *transaction = BRTransactionNew();
-    uint64_t feeAmount, amount = 0, balance = 0, minAmount;
+    uint64_t amount = 0, balance = 0, minAmount;
     size_t i, j, cpfpSize = 0;
     BRUTXO *o;
     BRAddress addr = BR_ADDRESS_NONE;
@@ -582,7 +587,7 @@ BRTransaction *BRWalletCreateTxForOutputs(BRWallet *wallet, const BRTxOutput out
     
     minAmount = BRWalletMinOutputAmount(wallet);
     pthread_mutex_lock(&wallet->lock);
-    feeAmount = 33332;//_txFee(wallet->feePerKb, BRTransactionSize(transaction) + TX_OUTPUT_SIZE);
+    // feeAmount = 33332;//_txFee(wallet->feePerKb, BRTransactionSize(transaction) + TX_OUTPUT_SIZE);
     
     // TODO: use up all UTXOs for all used addresses to avoid leaving funds in addresses whose public key is revealed
     // TODO: avoid combining addresses in a single transaction when possible to reduce information leakage
@@ -611,9 +616,9 @@ BRTransaction *BRWalletCreateTxForOutputs(BRWallet *wallet, const BRTxOutput out
                 }
                 
                 newOutputs[outCount - 1].amount -= amount + feeAmount - balance; // reduce last output amount
-                transaction = BRWalletCreateTxForOutputs(wallet, newOutputs, outCount);
+                transaction = BRWalletCreateTxForOutputs(wallet, newOutputs, outCount, feeAmount);
             }
-            else transaction = BRWalletCreateTxForOutputs(wallet, outputs, outCount - 1); // remove last output
+            else transaction = BRWalletCreateTxForOutputs(wallet, outputs, outCount - 1, feeAmount); // remove last output
 
             // balance = amount = feeAmount = 0;
             pthread_mutex_lock(&wallet->lock);
@@ -1105,7 +1110,7 @@ uint64_t BRWalletFeeForTxAmount(BRWallet *wallet, uint64_t amount)
     maxAmount = BRWalletMaxOutputAmount(wallet);
     o.amount = (amount < maxAmount) ? amount : maxAmount;
     BRTxOutputSetScript(&o, dummyScript, sizeof(dummyScript)); // unspendable dummy scriptPubKey
-    tx = BRWalletCreateTxForOutputs(wallet, &o, 1);
+    tx = BRWalletCreateTxForOutputs(wallet, &o, 1, 0);
 
     if (tx) {
         fee = BRWalletFeeForTx(wallet, tx);

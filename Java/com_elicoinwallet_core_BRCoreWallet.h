@@ -133,7 +133,7 @@ JNIEXPORT jlong JNICALL Java_com_elicoinwallet_core_BRCoreWallet_getDefaultFeePe
  * Signature: (JLcom/elicoinwallet/core/BRCoreAddress;)Lcom/elicoinwallet/core/BRCoreTransaction;
  */
 JNIEXPORT jobject JNICALL Java_com_elicoinwallet_core_BRCoreWallet_createTransaction
-  (JNIEnv *, jobject, jlong, jobject);
+  (JNIEnv *, jobject, jlong, jobject, jlong);
 
 /*
  * Class:     com_elicoinwallet_core_BRCoreWallet
