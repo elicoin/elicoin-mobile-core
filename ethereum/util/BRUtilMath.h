@@ -62,6 +62,13 @@ UInt256GetCompact(UInt256 nFull);
 extern UInt256
 createUInt256FromCompact (uint32_t nCompact);
 
+
+extern UInt256
+createUInt256FromCompactVersion2 (uint32_t nCompact);
+
+
+
+
 /**
  * Create as `(expt 10 power)` where power < 20 is required.
  */

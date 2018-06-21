@@ -353,7 +353,6 @@ int BRMerkleBlockVerifyDifficultyDarkGravityWave(const BRMerkleBlock *block, con
     uint64_t lastCheckpointIndex = checkpoints[checkpointsCount-1].height;
 
     uint32_t index = block->height-1;
-    UInt256 bnPowLimit = createUInt256FromCompact(MAX_PROOF_OF_WORK);
     uint32_t nPastBlocks = 24;
     uint32_t nPowTargetSpacing = 1 * 60; // Elicoin full node - chainparams.cpp
 
@@ -362,6 +361,8 @@ int BRMerkleBlockVerifyDifficultyDarkGravityWave(const BRMerkleBlock *block, con
         r = 1;
         return r;
     }
+
+    UInt256 bnPowLimit = createUInt256FromCompactVersion2(MAX_PROOF_OF_WORK);
 
     const BRMerkleBlock *aBlock = BRSetGet(blockSet,&block->prevBlock);
     const BRMerkleBlock *lastBlock = BRSetGet(blockSet,&block->prevBlock);
@@ -374,7 +375,7 @@ int BRMerkleBlockVerifyDifficultyDarkGravityWave(const BRMerkleBlock *block, con
 
     UInt256 bnPastTargetAvg = UINT256_ZERO;
     for(uint32_t nCountBlocks = 1; nCountBlocks <= nPastBlocks; nCountBlocks++){
-        UInt256 bnTarget = createUInt256FromCompact(aBlock->target);
+        UInt256 bnTarget = createUInt256FromCompactVersion2(aBlock->target);
         if(nCountBlocks == 1){
             bnPastTargetAvg = bnTarget;
         }else{
@@ -384,6 +385,10 @@ int BRMerkleBlockVerifyDifficultyDarkGravityWave(const BRMerkleBlock *block, con
         }
         if(nCountBlocks != nPastBlocks) {
             aBlock = BRSetGet(blockSet,&aBlock->prevBlock);
+            if(aBlock == NULL){
+                // Can't verify
+                return 1;
+            }
         }
     }
 
